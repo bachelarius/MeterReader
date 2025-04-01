@@ -12,19 +12,19 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["MeterReader/MeterReader.csproj", "MeterReader/"]
-RUN dotnet restore "./MeterReader/MeterReader.csproj"
+COPY ["MeterReader/MeterReaderAPI.csproj", "MeterReader/"]
+RUN dotnet restore "./MeterReader/MeterReaderAPI.csproj"
 COPY . .
 WORKDIR "/src/MeterReader"
-RUN dotnet build "./MeterReader.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "./MeterReaderAPI.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./MeterReader.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./MeterReaderAPI.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "MeterReader.dll"]
+ENTRYPOINT ["dotnet", "MeterReaderAPI.dll"]
