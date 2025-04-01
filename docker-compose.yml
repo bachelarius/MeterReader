@@ -1,6 +1,7 @@
+name: meter-reader
 services:
   meter-reader-api:
-    image: ${DOCKER_REGISTRY-}meterreaderapi
+    image: ${DOCKER_REGISTRY-}meter-reader-api
     build:
       context: .
       dockerfile: MeterReader/Dockerfile
