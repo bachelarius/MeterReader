@@ -1,9 +1,9 @@
-using MeterReaderAPI.Models;
+using MeterReaderAPI.Accounts;
 using Microsoft.EntityFrameworkCore;
 
 namespace MeterReaderAPI.Data;
 
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) 
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
     : DbContext(options) {
     public DbSet<Account> Accounts { get; set; }
 
