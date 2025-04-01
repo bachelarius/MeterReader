@@ -1,3 +1,4 @@
+using MeterReaderAPI.Accounts;
 using MeterReaderAPI.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,6 +11,8 @@ builder.Services.AddOpenApi();
 // Add DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddTransient<IAccountsSeedService, AccountsSeedService>();
 
 var app = builder.Build();
 
