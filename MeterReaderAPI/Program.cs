@@ -1,3 +1,5 @@
+using LanguageExt;
+using MeterReaderAPI.Accounts;
 using MeterReaderAPI.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,7 +13,14 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddSingleton<IAccountsExtractorService, AccountExtractorService>();
+builder.Services.AddTransient<IAccountsSeedService, AccountsSeedService>();
+
 var app = builder.Build();
+
+//Initialize the database
+using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(5));
+await app.Services.InitializeDatabaseAsync(cts.Token);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()) {
@@ -24,7 +33,7 @@ var summaries = new[] {
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
-app.MapGet("/weatherforecast", 
+app.MapGet("/weatherforecast",
     () => {
         var forecast = Enumerable.Range(1, 5).Select(index =>
             new WeatherForecast(
