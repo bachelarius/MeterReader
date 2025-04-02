@@ -1,8 +1,7 @@
 ﻿using FileHelpers;
-using LanguageExt;
 
 namespace MeterReaderAPI.Accounts {
-    
+
     public interface IAccountsExtractorService {
         public IEnumerable<AccountCsvDTO> ExtractAccounts();
     }

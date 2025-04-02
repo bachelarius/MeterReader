@@ -4,11 +4,9 @@ using Moq;
 
 namespace MeterReaderAPITests.Accounts;
 
-public class AccountExtractorServiceTests
-{
+public class AccountExtractorServiceTests {
     [Fact]
-    public void ExtractAccounts_WithValidCsv_ShouldReturnAccounts()
-    {
+    public void ExtractAccounts_WithValidCsv_ShouldReturnAccounts() {
         var sut = new AccountExtractorService(Mock.Of<ILogger<AccountExtractorService>>());
 
         // Act

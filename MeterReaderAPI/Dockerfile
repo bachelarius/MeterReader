@@ -12,10 +12,10 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["MeterReader/MeterReaderAPI.csproj", "MeterReader/"]
-RUN dotnet restore "./MeterReader/MeterReaderAPI.csproj"
+COPY ["MeterReaderAPI/MeterReaderAPI.csproj", "MeterReaderAPI/"]
+RUN dotnet restore "./MeterReaderAPI/MeterReaderAPI.csproj"
 COPY . .
-WORKDIR "/src/MeterReader"
+WORKDIR "/src/MeterReaderAPI"
 RUN dotnet build "./MeterReaderAPI.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage

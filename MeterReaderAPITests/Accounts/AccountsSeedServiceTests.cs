@@ -6,13 +6,11 @@ using Moq;
 
 namespace MeterReaderAPITests.Accounts;
 
-public class AccountsSeedServiceTests : IDisposable
-{
+public class AccountsSeedServiceTests : IDisposable {
     private readonly ApplicationDbContext _context;
     private readonly AccountsSeedService _sut;
 
-    public AccountsSeedServiceTests()
-    {
+    public AccountsSeedServiceTests() {
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
@@ -22,8 +20,7 @@ public class AccountsSeedServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task SeedAsync_WithNewAccounts_ShouldAddToDatabase()
-    {
+    public async Task SeedAsync_WithNewAccounts_ShouldAddToDatabase() {
         // Arrange
         var accounts = new List<Account>
         {
@@ -37,19 +34,18 @@ public class AccountsSeedServiceTests : IDisposable
         // Assert
         var savedAccounts = await _context.Accounts.ToListAsync();
         Assert.Equal(2, savedAccounts.Count);
-        
+
         var john = savedAccounts.First(a => a.AccountId == 1);
         Assert.Equal("John", john.FirstName);
         Assert.Equal("Doe", john.LastName);
-        
+
         var jane = savedAccounts.First(a => a.AccountId == 2);
         Assert.Equal("Jane", jane.FirstName);
         Assert.Equal("Smith", jane.LastName);
     }
 
     [Fact]
-    public async Task SeedAsync_WithExistingAccounts_ShouldNotDuplicate()
-    {
+    public async Task SeedAsync_WithExistingAccounts_ShouldNotDuplicate() {
         // Arrange
         var existingAccount = new Account { AccountId = 1, FirstName = "John", LastName = "Doe" };
         await _context.Accounts.AddAsync(existingAccount);
@@ -67,19 +63,18 @@ public class AccountsSeedServiceTests : IDisposable
         // Assert
         var savedAccounts = await _context.Accounts.ToListAsync();
         Assert.Equal(2, savedAccounts.Count);
-        
+
         var john = savedAccounts.First(a => a.AccountId == 1);
         Assert.Equal("John", john.FirstName);
         Assert.Equal("Doe", john.LastName);
-        
+
         var jane = savedAccounts.First(a => a.AccountId == 2);
         Assert.Equal("Jane", jane.FirstName);
         Assert.Equal("Smith", jane.LastName);
     }
 
     [Fact]
-    public async Task SeedAsync_WithEmptyList_ShouldNotModifyDatabase()
-    {
+    public async Task SeedAsync_WithEmptyList_ShouldNotModifyDatabase() {
         // Arrange
         var accounts = new List<Account>();
 
@@ -92,8 +87,7 @@ public class AccountsSeedServiceTests : IDisposable
     }
 
     [Fact]
-    public async Task SeedAsync_WithAllExistingAccounts_ShouldNotModifyDatabase()
-    {
+    public async Task SeedAsync_WithAllExistingAccounts_ShouldNotModifyDatabase() {
         // Arrange
         var existingAccount = new Account { AccountId = 1, FirstName = "John", LastName = "Doe" };
         await _context.Accounts.AddAsync(existingAccount);
@@ -110,7 +104,7 @@ public class AccountsSeedServiceTests : IDisposable
         // Assert
         var savedAccounts = await _context.Accounts.ToListAsync();
         Assert.Single(savedAccounts);
-        
+
         var john = savedAccounts.First();
         Assert.Equal(1, john.AccountId);
         Assert.Equal("John", john.FirstName);

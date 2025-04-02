@@ -4,7 +4,7 @@ services:
     image: ${DOCKER_REGISTRY-}meter-reader-api
     build:
       context: .
-      dockerfile: MeterReader/Dockerfile
+      dockerfile: MeterReaderAPI/Dockerfile
     depends_on:
       postgresdb:
         condition: service_healthy
