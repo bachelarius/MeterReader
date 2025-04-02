@@ -13,14 +13,14 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddSingleton<IAccountsExtractorService, AccountExtractorService>();
 builder.Services.AddTransient<IAccountsSeedService, AccountsSeedService>();
 
 var app = builder.Build();
 
 //Initialize the database
 using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(5));
-var result = await app.Services.InitializeDatabaseAsync(app.Logger, cts.Token);
-result.IfFail(ex => throw ex);
+await app.Services.InitializeDatabaseAsync(cts.Token);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()) {
