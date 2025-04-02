@@ -11,7 +11,7 @@ namespace MeterReaderAPI.Accounts {
         public readonly ApplicationDbContext _context = context;
 
         public Task<Result<Unit>> SeedAsync(CancellationToken ct) {
-            throw new NotImplementedException();
+            return Task.FromResult(new Result<Unit>(new NotImplementedException()));
         }
     }
 }

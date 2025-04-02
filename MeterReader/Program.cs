@@ -1,3 +1,4 @@
+using LanguageExt;
 using MeterReaderAPI.Accounts;
 using MeterReaderAPI.Data;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddTransient<IAccountsSeedService, AccountsSeedService>();
 
 var app = builder.Build();
+
+//Initialize the database
+using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(5));
+(await app.Services.InitializeDatabaseAsync(app.Logger, cts.Token)).IfFail(ex => throw ex);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()) {
