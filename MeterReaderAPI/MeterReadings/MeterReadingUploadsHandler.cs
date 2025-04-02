@@ -2,7 +2,8 @@ using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace MeterReaderAPI.MeterReadings;
 
-public static class MeterReadingUploadsHandler {
+public static class MeterReadingUploadsHandler 
+{
     public static async Task<Results<Ok<object>, BadRequest<string>, StatusCodeHttpResult>> Handle(
         IFormFile file,
         IMeterReadingExtractorService meterReadingExtractor,
@@ -19,12 +20,12 @@ public static class MeterReadingUploadsHandler {
             using var reader = new StreamReader(file.OpenReadStream());
             var csvContent = await reader.ReadToEndAsync();
             var meterReadingDtos = meterReadingExtractor.ExtractMeterReadings(csvContent).ToList();
-            
+
             var validReadings = new List<MeterReading>();
             var invalidReadings = new List<MeterReadingCsvDTO>();
 
             foreach (var dto in meterReadingDtos) {
-                var validatedReadings = meterReadingValidator.ExtractMeterReadings(dto).ToList();
+                var validatedReadings = meterReadingValidator.ValidateReading(dto).ToList();
                 if (validatedReadings.Count != 0) {
                     validReadings.AddRange(validatedReadings);
                 } else {
@@ -39,11 +40,12 @@ public static class MeterReadingUploadsHandler {
                 Readings = validReadings,
                 FailedReadingDetails = invalidReadings
             });
-        } catch (Exception) {
+        } catch (Exception ex) {
             return TypedResults.StatusCode(500);
         }
     }
 }
+
 
 
 

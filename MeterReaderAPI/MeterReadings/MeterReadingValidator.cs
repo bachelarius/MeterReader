@@ -2,12 +2,12 @@
 
 namespace MeterReaderAPI.MeterReadings {
     public interface IMeterReadingValidator {
-        IEnumerable<MeterReading> ExtractMeterReadings(MeterReadingCsvDTO meterReading);
+        IEnumerable<MeterReading> ValidateReading(MeterReadingCsvDTO meterReading);
     }
     public class MeterReadingValidator(ApplicationDbContext context) : IMeterReadingValidator {
         private readonly ApplicationDbContext _context = context;
 
-        public IEnumerable<MeterReading> ExtractMeterReadings(MeterReadingCsvDTO meterReading) {
+        public IEnumerable<MeterReading> ValidateReading(MeterReadingCsvDTO meterReading) {
             // Validate Account ID exists
             var accountExists = _context.Accounts.Any(a => a.AccountId == meterReading.AccountId);
             if (!accountExists) {
@@ -19,11 +19,15 @@ namespace MeterReaderAPI.MeterReadings {
                 yield break;
             }
 
+            // Check that date is valid
+            if (!DateTimeOffset.TryParse(meterReading.MeterReadingDateTime, out var readingDateTime)) {
+                yield break;
+            }
+
             // Check for duplicate entry
-            var readingDateTime = DateTimeOffset.Parse(meterReading.MeterReadingDateTime);
-            var isDuplicate = _context.Set<MeterReading>().Any(r => 
-                r.AccountId == meterReading.AccountId && 
-                r.MeterReadingDateTime == readingDateTime && 
+            var isDuplicate = _context.Set<MeterReading>().Any(r =>
+                r.AccountId == meterReading.AccountId &&
+                r.MeterReadingDateTime == readingDateTime &&
                 r.MeterReadingValue == meterReading.MeterReadValue);
 
             if (isDuplicate) {

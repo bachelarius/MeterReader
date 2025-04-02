@@ -5,13 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MeterReaderAPITests.MeterReadings;
 
-public class MeterReadingValidatorTests : IDisposable
-{
+public class MeterReadingValidatorTests : IDisposable {
     private readonly ApplicationDbContext _context;
     private readonly MeterReadingValidator _validator;
 
-    public MeterReadingValidatorTests()
-    {
+    public MeterReadingValidatorTests() {
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
@@ -29,18 +27,16 @@ public class MeterReadingValidatorTests : IDisposable
     }
 
     [Fact]
-    public void ExtractMeterReadings_WithValidReading_ReturnsReading()
-    {
+    public void ExtractMeterReadings_WithValidReading_ReturnsReading() {
         // Arrange
-        var dto = new MeterReadingCsvDTO
-        {
+        var dto = new MeterReadingCsvDTO {
             AccountId = 1234,
             MeterReadingDateTime = "2024-03-20 10:00:00",
             MeterReadValue = 12345
         };
 
         // Act
-        var result = _validator.ExtractMeterReadings(dto).ToList();
+        var result = _validator.ValidateReading(dto).ToList();
 
         // Assert
         Assert.Single(result);
@@ -51,18 +47,16 @@ public class MeterReadingValidatorTests : IDisposable
     }
 
     [Fact]
-    public void ExtractMeterReadings_WithNonExistentAccount_ReturnsEmpty()
-    {
+    public void ExtractMeterReadings_WithNonExistentAccount_ReturnsEmpty() {
         // Arrange
-        var dto = new MeterReadingCsvDTO
-        {
+        var dto = new MeterReadingCsvDTO {
             AccountId = 9999, // Non-existent account
             MeterReadingDateTime = "2024-03-20 10:00:00",
             MeterReadValue = 12345
         };
 
         // Act
-        var result = _validator.ExtractMeterReadings(dto).ToList();
+        var result = _validator.ValidateReading(dto).ToList();
 
         // Assert
         Assert.Empty(result);
@@ -71,29 +65,25 @@ public class MeterReadingValidatorTests : IDisposable
     [Theory]
     [InlineData(-1)]
     [InlineData(100000)]
-    public void ExtractMeterReadings_WithInvalidReadingValue_ReturnsEmpty(int invalidValue)
-    {
+    public void ExtractMeterReadings_WithInvalidReadingValue_ReturnsEmpty(int invalidValue) {
         // Arrange
-        var dto = new MeterReadingCsvDTO
-        {
+        var dto = new MeterReadingCsvDTO {
             AccountId = 1234,
             MeterReadingDateTime = "2024-03-20 10:00:00",
             MeterReadValue = invalidValue
         };
 
         // Act
-        var result = _validator.ExtractMeterReadings(dto).ToList();
+        var result = _validator.ValidateReading(dto).ToList();
 
         // Assert
         Assert.Empty(result);
     }
 
     [Fact]
-    public void ExtractMeterReadings_WithDuplicateReading_ReturnsEmpty()
-    {
+    public void ExtractMeterReadings_WithDuplicateReading_ReturnsEmpty() {
         // Arrange
-        var dto = new MeterReadingCsvDTO
-        {
+        var dto = new MeterReadingCsvDTO {
             AccountId = 1234,
             MeterReadingDateTime = "2024-03-20 10:00:00",
             MeterReadValue = 12345
@@ -109,7 +99,7 @@ public class MeterReadingValidatorTests : IDisposable
         _context.SaveChanges();
 
         // Act
-        var result = _validator.ExtractMeterReadings(dto).ToList();
+        var result = _validator.ValidateReading(dto).ToList();
 
         // Assert
         Assert.Empty(result);
@@ -118,18 +108,16 @@ public class MeterReadingValidatorTests : IDisposable
     [Theory]
     [InlineData(0)]
     [InlineData(99999)]
-    public void ExtractMeterReadings_WithBoundaryValues_ReturnsReading(int value)
-    {
+    public void ExtractMeterReadings_WithBoundaryValues_ReturnsReading(int value) {
         // Arrange
-        var dto = new MeterReadingCsvDTO
-        {
+        var dto = new MeterReadingCsvDTO {
             AccountId = 1234,
             MeterReadingDateTime = "2024-03-20 10:00:00",
             MeterReadValue = value
         };
 
         // Act
-        var result = _validator.ExtractMeterReadings(dto).ToList();
+        var result = _validator.ValidateReading(dto).ToList();
 
         // Assert
         Assert.Single(result);
