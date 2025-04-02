@@ -1,27 +1,21 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace MeterReaderAPI.Migrations
-{
+namespace MeterReaderAPI.Migrations {
     /// <inheritdoc />
-    public partial class AddMeterReadingsTable : Migration
-    {
+    public partial class AddMeterReadingsTable : Migration {
         /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
+        protected override void Up(MigrationBuilder migrationBuilder) {
             migrationBuilder.CreateTable(
                 name: "MeterReading",
-                columns: table => new
-                {
+                columns: table => new {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     AccountId = table.Column<int>(type: "integer", nullable: false),
                     MeterReadingDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     MeterReadingValue = table.Column<int>(type: "integer", nullable: false)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("PK_MeterReading", x => x.Id);
                     table.ForeignKey(
                         name: "FK_MeterReading_Accounts_AccountId",
@@ -39,8 +33,7 @@ namespace MeterReaderAPI.Migrations
         }
 
         /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
+        protected override void Down(MigrationBuilder migrationBuilder) {
             migrationBuilder.DropTable(
                 name: "MeterReading");
         }

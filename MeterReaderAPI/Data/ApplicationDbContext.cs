@@ -16,7 +16,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entity.Property(e => e.FirstName).IsRequired();
             entity.Property(e => e.LastName).IsRequired();
         });
-        
+
         modelBuilder.Entity<MeterReading>(entity => {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.AccountId).IsRequired();
