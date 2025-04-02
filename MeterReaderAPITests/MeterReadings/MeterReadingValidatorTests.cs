@@ -124,9 +124,34 @@ public class MeterReadingValidatorTests : IDisposable {
         Assert.Equal(value, result[0].MeterReadingValue);
     }
 
+    [Theory]
+    [InlineData("invalid-date")]
+    [InlineData("2024/13/45")]
+    [InlineData("22-04-2019")] // Missing time component
+    [InlineData("2024-03-20")] // Missing time component
+    [InlineData("09:24 22/04/2019")] // Wrong order
+    [InlineData("")] // Empty string
+    public void ExtractMeterReadings_WithInvalidDateFormat_ReturnsEmpty(string invalidDate)
+    {
+        // Arrange
+        var dto = new MeterReadingCsvDTO
+        {
+            AccountId = 1234,
+            MeterReadingDateTime = invalidDate,
+            MeterReadValue = 12345
+        };
+
+        // Act
+        var result = _validator.ValidateReading(dto).ToList();
+
+        // Assert
+        Assert.Empty(result);
+    }
+
     public void Dispose() {
         _context.Database.EnsureDeleted();
         _context.Dispose();
         GC.SuppressFinalize(this);
     }
 }
+

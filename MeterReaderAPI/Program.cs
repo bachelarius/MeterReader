@@ -45,8 +45,11 @@ internal class Program {
 
         app.UseHttpsRedirection();
 
-        app.MapPost("/meter-reading-uploads", async ([FromForm] MeterReadingUploadRequest request, IMeterReadingExtractorService meterReadingExtractor, IMeterReadingValidator meterReadingValidator) => 
-            await MeterReadingUploadsHandler.Handle(request.File, meterReadingExtractor, meterReadingValidator))
+        app.MapPost("/meter-reading-uploads", async ([FromForm] MeterReadingUploadRequest request, 
+            IMeterReadingExtractorService meterReadingExtractor, 
+            IMeterReadingValidator meterReadingValidator,
+            ApplicationDbContext dbContext) => 
+                await MeterReadingUploadsHandler.Handle(request.File, meterReadingExtractor, meterReadingValidator, dbContext))
             .WithName("UploadMeterReadings")
             .WithOpenApi(operation => new(operation)
             {
