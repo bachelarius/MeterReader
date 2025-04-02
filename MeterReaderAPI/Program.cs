@@ -1,4 +1,3 @@
-using LanguageExt;
 using MeterReaderAPI.Accounts;
 using MeterReaderAPI.Data;
 using MeterReaderAPI.MeterReadings;

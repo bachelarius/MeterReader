@@ -1,4 +1,3 @@
-using LanguageExt;
 using MeterReaderAPI.Accounts;
 using Microsoft.EntityFrameworkCore;
 
