@@ -9,7 +9,7 @@ namespace MeterReaderAPI.Accounts {
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
 
-        public Account ToDomain() => new Account {
+        public Account ToDomain() => new() {
             AccountId = AccountId,
             FirstName = FirstName,
             LastName = LastName
