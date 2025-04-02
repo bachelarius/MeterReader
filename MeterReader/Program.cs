@@ -19,7 +19,8 @@ var app = builder.Build();
 
 //Initialize the database
 using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(5));
-(await app.Services.InitializeDatabaseAsync(app.Logger, cts.Token)).IfFail(ex => throw ex);
+var result = await app.Services.InitializeDatabaseAsync(app.Logger, cts.Token);
+result.IfFail(ex => throw ex);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()) {
