@@ -1,6 +1,7 @@
 using LanguageExt;
 using MeterReaderAPI.Accounts;
 using MeterReaderAPI.Data;
+using MeterReaderAPI.MeterReadings;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddSingleton<IAccountsExtractorService, AccountExtractorService>();
 builder.Services.AddTransient<IAccountsSeedService, AccountsSeedService>();
+builder.Services.AddTransient<IMeterReadingExtractorService, MeterReadingExtractorService>();
 
 var app = builder.Build();
 
